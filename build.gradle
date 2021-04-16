@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'scala'
+    id 'war'
+}
+
+apply plugin: 'com.bmuschko.tomcat'
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def tomcatVersion = '8.0.42'    //'7.0.76'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // Use Scala 2.13 in our library project
+    implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.3'
+
+    // This dependency is used by the application.
+    implementation group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+
+    // Use Scalatest for testing our library
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+    testImplementation group: 'org.scalatest', name: 'scalatest_2.13', version: '3.2.3'
+    testImplementation 'org.scalatestplus:junit-4-13_2.13:3.2.2.0'
+
+    // Need scala-xml at test runtime
+    testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.13:1.2.0'
+}
+
+tomcat {
+    httpPort = 9080
+    httpsPort = 9443
+    stopPort = 9081
+    ajpPort = 9009
+
+//    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+//    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+
+wrapper {
+    gradleVersion = '7.0'
+}
